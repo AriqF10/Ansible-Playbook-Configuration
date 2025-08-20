@@ -1,6 +1,6 @@
 ---
 - name: apt list
-  hosts: ariq
+  hosts: ariq 
   become: yes
   gather_facts: yes
 

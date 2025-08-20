@@ -1,7 +1,7 @@
 # firewall_hardening.yml
 ---
 - name: Apply Cis Firewall Hardening (UFW)
-  hosts: all
+  hosts: all #change with the group in your inventory that you want to config (change to "all" to config all machine in inventory)
   become: True
   vars:
     ufw_allowed_ports:
@@ -45,14 +45,14 @@
         from_ip: "{{ item.from_ip | default('any') }}"
         comment: "allow {{ item.port }}/{{ item.proto | default('any') }} for {{ item.comment }}"
       loop:
-        - { port: '22', proto: 'tcp', from_ip: '100.65.120.100', comment: 'SSH vm 1' }
-        - { port: '22', proto: 'tcp', from_ip: '100.103.24.100', comment: 'SSH vm 2' }
-        - { port: '22', proto: 'tcp', from_ip: '100.88.82.55', comment: 'SSH vm 3'  }
+        - { port: '22', proto: 'tcp', from_ip: '100.65.120.100', comment: 'SSH vm 1' } #change the ip according to your server
+        - { port: '22', proto: 'tcp', from_ip: '100.103.24.100', comment: 'SSH vm 2' } #change the ip according to your server
+        - { port: '22', proto: 'tcp', from_ip: '100.88.82.55', comment: 'SSH vm 3'  } #change the ip according to your server
         - { port: '80', proto: 'tcp', comment: 'HTTP' }
         - { port: '443', proto: 'tcp', comment: 'HTTPS' }
         - { port: '1156', comment: ' '  }
         - { port: '48323', comment: ' ' }
-        - { port: '4444', comment: ' ' }
+        - { port: '4444', comment: ' ' } # if you not using the port that listed in here just delete it or givr comment (#)
 
     - name: default policies
       community.general.ufw:
@@ -62,7 +62,7 @@
         - { direction: 'incoming', policy: 'deny' }
         - { direction: 'outgoing', policy: 'allow' }
 
-    - name: enableipv6
+    - name: enableipv6 #just comment this if you not using ipv6
       ansible.builtin.lineinfile:
         path: /etc/default/ufw
         regexp: '^IPV6='
@@ -79,7 +79,7 @@
       loop:
         - { rule: 'allow', direction: 'in', interface: 'lo', comment: 'allow loopback traffic in' }
         - { rule: 'allow', direction: 'out', interface: 'lo', comment: 'allow loopback traffic out' }
-        - { rule: 'deny', direction: 'in', from_ip: '127.0.0.0/8', comment: 'Deny spoofed loopback traffic (ipv4)' }
+        - { rule: 'deny', direction: 'in', from_ip: '127.0.0.0/8', comment: 'Deny spoofed loopback traffic (ipv4)' } #change the ip range according to you server
         - { rule: 'deny', direction: 'in', from_ip: '::1', comment: 'deny spoofed loopback traffic (ipv6)' }
 
     - name: service port
@@ -90,14 +90,14 @@
         comment: "allow required service {{ item }}"
       loop: "{{ufw_allowed_ports }}"
 
-#    - name: ufw default deny
-#      community.general.ufw:
-#        policy: 'deny'
-#        direction: "{{ item }}"
-#      loop:
-#        - 'incoming'
-#        - 'outgoing'
-#        - 'routed'
+    - name: ufw default deny
+      community.general.ufw:
+        policy: 'deny'
+        direction: "{{ item }}"
+      loop:
+        - 'incoming'
+        - 'outgoing'
+        - 'routed'
 
     - name: Restart UFW to apply IPv6 setting
       ansible.builtin.systemd:

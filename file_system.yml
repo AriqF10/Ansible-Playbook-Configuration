@@ -2,7 +2,7 @@
 ---
 
 - name: Filesystem hardening
-  hosts: my_machine,prod_servers
+  hosts: my_machine,prod_servers #change with the group in your inventory that you want to config (change to "all" to config all machine in inventory)
   become: true
   vars:
     modules:

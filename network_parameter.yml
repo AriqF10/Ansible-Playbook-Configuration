@@ -1,6 +1,6 @@
 ---
 - name: Network parameter
-  hosts: all
+  hosts: all #change with the group in your inventory that you want to config (change to "all" to config all machine in inventory)
   become: yes
   vars:
     sysctl_parameters:

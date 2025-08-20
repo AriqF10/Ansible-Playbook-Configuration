@@ -2,7 +2,7 @@
 ---
 
 - name: Apply CIS SSH Hardening
-  hosts: prod_servers,my_machine
+  hosts: prod_servers,my_machine #change with the group in your inventory that you want to config (change to "all" to config all machine in inventory)
   become: true
   gather_facts: yes
 
